@@ -1641,8 +1641,7 @@ namespace WindowsFormsApp2
                     if (Altair.Checked == false)
                     {
                         if (dev.model.StartsWith("BG95") ||     // Quectel BG95-M6, BG950, BG951 
-                            dev.model.StartsWith("BC660") ||    // Quectel BC660
-                            dev.model.StartsWith("BG770"))      // Quectel BG770
+                            dev.model.StartsWith("BG77"))       // Quectel BG770, BG772
                         {
                             string[] state = str2.Replace("\"", string.Empty).Split(',');
                             if (state[0] == "event")
@@ -1773,6 +1772,10 @@ namespace WindowsFormsApp2
                                     receiveFotaData(state[3], state[4]);
                                 }
                             }
+                        }
+                        else if (dev.model.Contains("BC660K"))
+                        {
+
                         }
                         else
                         {
@@ -1978,6 +1981,13 @@ namespace WindowsFormsApp2
 
                         timer2.Interval = 10000;
                         timer2.Start();
+                    }
+
+                    if (dev.model.Equals("Quectel_BC660K-GL"))
+                    {
+                        this.sendDataOut("AT+QSCLK=0"); // Disable deepsleep mode for test
+                        this.sendDataOut("AT+QLWADDOBJ=10250,0,2,0,1"); // create 10250 object
+                        this.sendDataOut("AT+QLWADDOBJ=26241,0,2,0,1"); // create 26241 object
                     }
 
                     if (Altair.Checked == true)
@@ -3435,8 +3445,7 @@ namespace WindowsFormsApp2
                         startLwM2MTC("tc0401", string.Empty, string.Empty, string.Empty, textBox52.Text);
                         lbActionState.Text = states.lwm2mtc0401.ToString();
                         if (dev.model.StartsWith("BG95") ||     // Quectel BG95-M6, BG950, BG951 
-                            dev.model.StartsWith("BC660") ||    // Quectel BC660
-                            dev.model.StartsWith("BG770"))      // Quectel BG770
+                            dev.model.StartsWith("BG77"))       // Quectel BG770, BG772
                             nextresponse = "+QLWDEREG: 0";
                     }
                     break;
@@ -3605,8 +3614,7 @@ namespace WindowsFormsApp2
                             startLwM2MTC("tc0401", string.Empty, string.Empty, string.Empty, textBox52.Text);
                             lbActionState.Text = states.lwm2mtc0401.ToString();
                             if (dev.model.StartsWith("BG95") ||     // Quectel BG95-M6, BG950, BG951 
-                                dev.model.StartsWith("BC660") ||    // Quectel BC660
-                                dev.model.StartsWith("BG770"))      // Quectel BG770
+                                dev.model.StartsWith("BG77"))       // Quectel BG770, BG772
                                 nextresponse = "+QLWDEREG: 0";
                         }
                         break;
@@ -9021,8 +9029,7 @@ namespace WindowsFormsApp2
             startLwM2MTC("tc0401", string.Empty, string.Empty, string.Empty, textBox52.Text);
             lbActionState.Text = states.deregistertpb23.ToString();
             if (dev.model.StartsWith("BG95") ||     // Quectel BG95-M6, BG950, BG951 
-                            dev.model.StartsWith("BC660") ||    // Quectel BC660
-                            dev.model.StartsWith("BG770"))      // Quectel BG770
+                dev.model.StartsWith("BG77"))       // Quectel BG770, BG772
                 nextresponse = "+QLWDEREG: 0";
         }
 
@@ -10465,8 +10472,7 @@ namespace WindowsFormsApp2
                 startLwM2MTC("tc0401", string.Empty, string.Empty, string.Empty, textBox52.Text);
                 SetText(lbActionState, states.lwm2mtc0401.ToString());
                 if (dev.model.StartsWith("BG95") ||     // Quectel BG95-M6, BG950, BG951 
-                            dev.model.StartsWith("BC660") ||    // Quectel BC660
-                            dev.model.StartsWith("BG770"))      // Quectel BG770
+                    dev.model.StartsWith("BG77"))       // Quectel BG770, BG772
                     nextresponse = "+QLWDEREG: 0";
             }
         }
