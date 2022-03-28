@@ -970,6 +970,37 @@ namespace WindowsFormsApp2
 
         }
 
+        private string generateData(string command, string txdata, bool isHex, bool useDoubleQuotation)
+        {
+            if (command.Contains("{DATA}") || command.Contains("{LENGTH}"))
+            {
+                string data = isHex ? StringToBCD(txdata.ToCharArray()) : txdata;
+                int length = txdata.Length;
+
+                return command.Replace("{LENGTH}", length.ToString())
+                              .Replace("{DATA}", useDoubleQuotation ? $"\"{data}\"" : data);
+            }
+            else // Legacy data command generation
+            {
+                if (isHex)
+                {
+                    string hexOutput = StringToBCD(txdata.ToCharArray());
+
+                    if (useDoubleQuotation)
+                        return(command + hexOutput.Length / 2 + ",\"" + hexOutput + "\"");
+                    else
+                        return(command + hexOutput.Length / 2 + "," + hexOutput);
+                }
+                else
+                {
+                    if (useDoubleQuotation)
+                        return(command + txdata.Length + ",\"" + txdata + "\"");
+                    else
+                        return(command + txdata.Length + "," + txdata);
+                }
+            }
+        }
+
         private void sendDataOut(string dataOUT)
         {
             try
@@ -3635,22 +3666,7 @@ namespace WindowsFormsApp2
 
                         if (Altair.Checked == false)
                         {
-                            if (checkBox8.Checked == true)
-                            {
-                                string hexOutput = StringToBCD(txData.ToCharArray());
-
-                                if (checkBox12.Checked == true)
-                                    this.sendDataOut(textBox53.Text + hexOutput.Length / 2 + ",\"" + hexOutput+"\"");
-                                else
-                                    this.sendDataOut(textBox53.Text + hexOutput.Length / 2 + "," + hexOutput);
-                            }
-                            else
-                            {
-                                if (checkBox12.Checked == true)
-                                    this.sendDataOut(textBox53.Text + txData.Length + ",\"" + txData+"\"");
-                                else
-                                    this.sendDataOut(textBox53.Text + txData.Length + "," + txData);
-                            }
+                            this.sendDataOut(generateData(textBox53.Text, txData, checkBox8.Checked, checkBox12.Checked));
 
                             startLwM2MTC("tc0501", string.Empty, string.Empty, string.Empty, textBox53.Text);
                             lbActionState.Text = states.lwm2mtc06034.ToString();
@@ -8986,22 +9002,7 @@ namespace WindowsFormsApp2
 
             if (Altair.Checked == false)
             {
-                if (checkBox8.Checked == true)
-                {
-                    string hexOutput = StringToBCD(txData.ToCharArray());
-
-                    if (checkBox12.Checked == true)
-                        this.sendDataOut(textBox53.Text + hexOutput.Length / 2 + ",\"" + hexOutput+"\"");
-                    else
-                        this.sendDataOut(textBox53.Text + hexOutput.Length / 2 + "," + hexOutput);
-                }
-                else
-                {
-                    if (checkBox12.Checked == true)
-                        this.sendDataOut(textBox53.Text + txData.Length + ",\"" + txData+"\"");
-                    else
-                        this.sendDataOut(textBox53.Text + txData.Length + "," + txData);
-                }
+                this.sendDataOut(generateData(textBox53.Text, txData, checkBox8.Checked, checkBox12.Checked));
 
                 startLwM2MTC("tc0501", string.Empty, string.Empty, string.Empty, textBox53.Text);
                 lbActionState.Text = states.sendmsghex.ToString();
@@ -10117,22 +10118,7 @@ namespace WindowsFormsApp2
 
                 if (Altair.Checked == false)
                 {
-                    if (checkBox8.Checked == true)
-                    {
-                        string hexOutput = StringToBCD(txData.ToCharArray());
-
-                        if (checkBox12.Checked == true)
-                            this.sendDataOut(textBox53.Text + hexOutput.Length / 2 + ",\"" + hexOutput+"\"");
-                        else
-                            this.sendDataOut(textBox53.Text + hexOutput.Length / 2 + "," + hexOutput);
-                    }
-                    else
-                    {
-                        if (checkBox12.Checked == true)
-                            this.sendDataOut(textBox53.Text + txData.Length + ",\"" + txData+"\"");
-                        else
-                            this.sendDataOut(textBox53.Text + txData.Length + "," + txData);
-                    }
+                    this.sendDataOut(generateData(textBox53.Text, txData, checkBox8.Checked, checkBox12.Checked));
 
                     startLwM2MTC("tc0501", string.Empty, string.Empty, string.Empty, textBox53.Text);
                     nextcommand = states.lwm2mtc0501.ToString();
@@ -10373,22 +10359,7 @@ namespace WindowsFormsApp2
 
             if (Altair.Checked == false)
             {
-                if (checkBox8.Checked == true)
-                {
-                    string hexOutput = StringToBCD(text.ToCharArray());
-
-                    if (checkBox12.Checked == true)
-                        this.sendDataOut(textBox51.Text + hexOutput.Length / 2 + ",\"" + hexOutput+"\"");
-                    else
-                        this.sendDataOut(textBox51.Text + hexOutput.Length / 2 + "," + hexOutput);
-                }
-                else
-                {
-                    if (checkBox12.Checked == true)
-                        this.sendDataOut(textBox51.Text + text.Length + ",\"" + text+"\"");
-                    else
-                        this.sendDataOut(textBox51.Text + text.Length + "," + text);
-                }
+                this.sendDataOut(generateData(textBox51.Text, text, checkBox8.Checked, checkBox12.Checked));
                 startLwM2MTC("tc0603", string.Empty, string.Empty, string.Empty, textBox51.Text);
             }
             else
