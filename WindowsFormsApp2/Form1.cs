@@ -3232,30 +3232,7 @@ namespace WindowsFormsApp2
                         // End Point Name Parameter 설정
                         //AT+MLWEPNS="LWM2M 서버 entityID"
                         setDeviceEntityID();
-                        if (checkBox6.Checked == true)
-                        {
-                            if (checkBox7.Checked == true)
-                            {
-                                if (checkBox2.Checked == false)
-                                    this.sendDataOut(textBox50.Text + "\"" + dev.entityId + "\"" + ",\"" + dev.entityId + "\"");
-                                else
-                                    this.sendDataOut(textBox50.Text + "\"" + tbSvcCd.Text + "\"" + ",\"" + tbSvcCd.Text + "\"");
-                            }
-                            else
-                            {
-                                if (checkBox2.Checked == false)
-                                    this.sendDataOut(textBox50.Text + "\"" + dev.entityId + "\"");
-                                else
-                                    this.sendDataOut(textBox50.Text + "\"" + tbSvcCd.Text + "\"");
-                            }
-                        }
-                        else
-                        {
-                            if (checkBox2.Checked == false)
-                                this.sendDataOut(textBox50.Text + dev.entityId);
-                            else
-                                this.sendDataOut(textBox50.Text + tbSvcCd.Text);
-                        }
+                        sendDeviceEPNS();
                         startLwM2MTC("tc0202", string.Empty, string.Empty, string.Empty, textBox50.Text);
                         lbActionState.Text = states.lwm2mtc02025.ToString();
                     }
@@ -3285,30 +3262,7 @@ namespace WindowsFormsApp2
                             this.sendDataOut(textBox50.Text + dev.entityId);
                         else
                             this.sendDataOut(textBox50.Text + tbSvcCd.Text);
-                    }
-                    startLwM2MTC("tc0202", string.Empty, string.Empty, string.Empty, textBox50.Text);
-                    lbActionState.Text = states.lwm2mtc02025.ToString();
-                    break;
-                case states.setepnstpb23:
-                    lbActionState.Text = states.idle.ToString();
-                    break;
-                case states.lwm2mtc02025:
-                    if (Altair.Checked == false)
-                    {
-                        string epncmd = string.Empty;
-                        string epniccid = dev.iccid;
-
-                        if (comboBox4.SelectedIndex == 0)
-                        {
-                            //AT+MLWMBSPS="serviceCode=GAMR|deviceSerialNo=1234567|ctn=01022335078 | iccId = 127313 | deviceModel = Summer | mac = "
-                            epncmd = "serviceCode=" + tbSvcCd.Text + "|deviceSerialNo=";
-                            epncmd += tBoxDeviceSN.Text + "|ctn=";
-                            epncmd += dev.imsi + "|iccId=";
-
-                            string iccid = dev.iccid;
-                            epncmd += epniccid.Substring(epniccid.Length - 6, 6) + "|deviceModel=";
-                            epncmd += tBoxDeviceModel.Text + "|mac=";
-                        }
+                    sendDeviceEPNS();
                         else
                         {
                             //AT+QLWMBSPS=<service code>,<sn>,<ctn>,<iccid>,<device model>
@@ -8885,29 +8839,36 @@ namespace WindowsFormsApp2
         private void sendDeviceEPNS()
         {
             setDeviceEntityID();
-            if (checkBox6.Checked == true)
+            if (textBox50.Text.Contains("{EPNS}"))
             {
-                if (checkBox7.Checked == true)
-                {
-                    if (checkBox2.Checked == false)
-                        this.sendDataOut(textBox50.Text + "\"" + dev.entityId + "\"" + ",\"" + dev.entityId + "\"");
-                    else
-                        this.sendDataOut(textBox50.Text + "\"" + tbSvcCd.Text + "\"" + ",\"" + tbSvcCd.Text + "\"");
-                }
-                else
-                {
-                    if (checkBox2.Checked == false)
-                        this.sendDataOut(textBox50.Text + "\"" + dev.entityId + "\"");
-                    else
-                        this.sendDataOut(textBox50.Text + "\"" + tbSvcCd.Text + "\"");
-                }
+                this.sendDataOut(textBox50.Text.Replace("{EPNS}", checkBox2.Checked ? tbSvcCd.Text : dev.entityId));
             }
             else
             {
-                if (checkBox2.Checked == false)
-                    this.sendDataOut(textBox50.Text + dev.entityId);
+                if (checkBox6.Checked == true)
+                {
+                    if (checkBox7.Checked == true)
+                    {
+                        if (checkBox2.Checked == false)
+                            this.sendDataOut(textBox50.Text + "\"" + dev.entityId + "\"" + ",\"" + dev.entityId + "\"");
+                        else
+                            this.sendDataOut(textBox50.Text + "\"" + tbSvcCd.Text + "\"" + ",\"" + tbSvcCd.Text + "\"");
+                    }
+                    else
+                    {
+                        if (checkBox2.Checked == false)
+                            this.sendDataOut(textBox50.Text + "\"" + dev.entityId + "\"");
+                        else
+                            this.sendDataOut(textBox50.Text + "\"" + tbSvcCd.Text + "\"");
+                    }
+                }
                 else
-                    this.sendDataOut(textBox50.Text + tbSvcCd.Text);
+                {
+                    if (checkBox2.Checked == false)
+                        this.sendDataOut(textBox50.Text + dev.entityId);
+                    else
+                        this.sendDataOut(textBox50.Text + tbSvcCd.Text);
+                }
             }
         }
 
@@ -8920,27 +8881,7 @@ namespace WindowsFormsApp2
         private void button92_Click(object sender, EventArgs e)
         {
             setDeviceEntityID();
-            string atcmd = textBox50.Text;
-            if (checkBox6.Checked == true)
-                atcmd += "\"";
-            if (checkBox2.Checked == false)
-                atcmd += dev.entityId;
-            else
-                atcmd += tbSvcCd.Text;
-            if (checkBox6.Checked == true)
-                atcmd += "\"";
-            if (checkBox7.Checked == true)
-            {
-                if (checkBox6.Checked == true)
-                    atcmd += ",\"";
-                if (checkBox2.Checked == false)
-                    atcmd += dev.entityId;
-                else
-                    atcmd += tbSvcCd.Text;
-                if (checkBox6.Checked == true)
-                    atcmd += "\"";
-            }
-            this.sendDataOut(atcmd);
+            sendDeviceEPNS();
             lbActionState.Text = states.setepnstpb23.ToString();
         }
 
