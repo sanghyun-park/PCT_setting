@@ -3470,7 +3470,8 @@ namespace WindowsFormsApp2
                         startLwM2MTC("tc0401", string.Empty, string.Empty, string.Empty, textBox52.Text);
                         lbActionState.Text = states.lwm2mtc0401.ToString();
                         if (dev.model.StartsWith("BG95") ||     // Quectel BG95-M6, BG950, BG951 
-                            dev.model.StartsWith("BG77"))       // Quectel BG770, BG772
+                            dev.model.StartsWith("BG77") ||     // Quectel BG770, BG772
+                            dev.model.Contains("BC660"))        // Quectel BC660
                             nextresponse = "+QLWDEREG: 0";
                     }
                     break;
@@ -3639,7 +3640,8 @@ namespace WindowsFormsApp2
                             startLwM2MTC("tc0401", string.Empty, string.Empty, string.Empty, textBox52.Text);
                             lbActionState.Text = states.lwm2mtc0401.ToString();
                             if (dev.model.StartsWith("BG95") ||     // Quectel BG95-M6, BG950, BG951 
-                                dev.model.StartsWith("BG77"))       // Quectel BG770, BG772
+                                dev.model.StartsWith("BG77") ||     // Quectel BG770, BG772
+                                dev.model.Contains("BC660"))        // Quectel BC660
                                 nextresponse = "+QLWDEREG: 0";
                         }
                         break;
@@ -9024,7 +9026,8 @@ namespace WindowsFormsApp2
             startLwM2MTC("tc0401", string.Empty, string.Empty, string.Empty, textBox52.Text);
             lbActionState.Text = states.deregistertpb23.ToString();
             if (dev.model.StartsWith("BG95") ||     // Quectel BG95-M6, BG950, BG951 
-                dev.model.StartsWith("BG77"))       // Quectel BG770, BG772
+                dev.model.StartsWith("BG77") ||     // Quectel BG770, BG772
+                dev.model.Contains("BC660"))        // Quectel BC660
                 nextresponse = "+QLWDEREG: 0";
         }
 
@@ -10437,7 +10440,8 @@ namespace WindowsFormsApp2
                 startLwM2MTC("tc0401", string.Empty, string.Empty, string.Empty, textBox52.Text);
                 SetText(lbActionState, states.lwm2mtc0401.ToString());
                 if (dev.model.StartsWith("BG95") ||     // Quectel BG95-M6, BG950, BG951 
-                    dev.model.StartsWith("BG77"))       // Quectel BG770, BG772
+                    dev.model.StartsWith("BG77") ||     // Quectel BG770, BG772
+                    dev.model.Contains("BC660"))        // Quectel BC660
                     nextresponse = "+QLWDEREG: 0";
             }
         }
