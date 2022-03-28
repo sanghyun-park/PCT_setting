@@ -3239,42 +3239,60 @@ namespace WindowsFormsApp2
                     break;
                 case states.lwm2mtc02024:
                     setDeviceEntityID();
-                    if (checkBox6.Checked == true)
-                    {
-                        if (checkBox7.Checked == true)
-                        {
-                            if (checkBox2.Checked == false)
-                                this.sendDataOut(textBox50.Text + "\"" + dev.entityId + "\"" + ",\"" + dev.entityId + "\"");
-                            else
-                                this.sendDataOut(textBox50.Text + "\"" + tbSvcCd.Text + "\"" + ",\"" + tbSvcCd.Text + "\"");
-                        }
-                        else
-                        {
-                            if (checkBox2.Checked == false)
-                                this.sendDataOut(textBox50.Text + "\"" + dev.entityId + "\"");
-                            else
-                                this.sendDataOut(textBox50.Text + "\"" + tbSvcCd.Text + "\"");
-                        }
-                    }
-                    else
-                    {
-                        if (checkBox2.Checked == false)
-                            this.sendDataOut(textBox50.Text + dev.entityId);
-                        else
-                            this.sendDataOut(textBox50.Text + tbSvcCd.Text);
                     sendDeviceEPNS();
-                        else
-                        {
-                            //AT+QLWMBSPS=<service code>,<sn>,<ctn>,<iccid>,<device model>
-                            epncmd = "\"" + tbSvcCd.Text + "\",\"";
-                            epncmd += tBoxDeviceSN.Text + "\",\"";
-                            epncmd += dev.imsi + "\",\"";
+                    startLwM2MTC("tc0202", string.Empty, string.Empty, string.Empty, textBox50.Text);
+                    lbActionState.Text = states.lwm2mtc02025.ToString();
+                    break;
+                case states.setepnstpb23:
+                    lbActionState.Text = states.idle.ToString();
+                    break;
+                case states.lwm2mtc02025:
+                    if (Altair.Checked == false)
+                    {
+                        string epncmd = string.Empty;
+                        string epniccid = dev.iccid;
 
-                            epncmd += epniccid.Substring(epniccid.Length - 6, 6) + "\",\"";
-                            epncmd += tBoxDeviceModel.Text + "\"";
+                        if (textBox55.Text.Contains("{CODE}") ||
+                            textBox55.Text.Contains("{SERIAL}") ||
+                            textBox55.Text.Contains("{CTN}") ||
+                            textBox55.Text.Contains("{ICCID}") ||
+                            textBox55.Text.Contains("{MODEL}") ||
+                            textBox55.Text.Contains("{MAC}"))
+                        {
+                            this.sendDataOut(textBox55.Text.Replace("{CODE}", tbSvcCd.Text)
+                                                           .Replace("{SERIAL}", tBoxDeviceSN.Text)
+                                                           .Replace("{CTN}", dev.imsi)
+                                                           .Replace("{ICCID}", epniccid.Substring(epniccid.Length - 6, 6))
+                                                           .Replace("{MODEL}", tBoxDeviceModel.Text)
+                                                           .Replace("{MAC}", ""));
+                        }
+                        else // Legacy
+                        {
+                            if (comboBox4.SelectedIndex == 0)
+                            {
+                                //AT+MLWMBSPS="serviceCode=GAMR|deviceSerialNo=1234567|ctn=01022335078 | iccId = 127313 | deviceModel = Summer | mac = "
+                                epncmd = "serviceCode=" + tbSvcCd.Text + "|deviceSerialNo=";
+                                epncmd += tBoxDeviceSN.Text + "|ctn=";
+                                epncmd += dev.imsi + "|iccId=";
+
+                                string iccid = dev.iccid;
+                                epncmd += epniccid.Substring(epniccid.Length - 6, 6) + "|deviceModel=";
+                                epncmd += tBoxDeviceModel.Text + "|mac=";
+                            }
+                            else
+                            {
+                                //AT+QLWMBSPS=<service code>,<sn>,<ctn>,<iccid>,<device model>
+                                epncmd = "\"" + tbSvcCd.Text + "\",\"";
+                                epncmd += tBoxDeviceSN.Text + "\",\"";
+                                epncmd += dev.imsi + "\",\"";
+
+                                epncmd += epniccid.Substring(epniccid.Length - 6, 6) + "\",\"";
+                                epncmd += tBoxDeviceModel.Text + "\"";
+                            }
+
+                            this.sendDataOut(textBox55.Text + epncmd);
                         }
 
-                        this.sendDataOut(textBox55.Text + epncmd);
                         lbActionState.Text = states.lwm2mtc02026.ToString();
                     }
                     else
@@ -8892,29 +8910,47 @@ namespace WindowsFormsApp2
                 string epncmd = string.Empty;
                 string epniccid = dev.iccid;
 
-                if (comboBox4.SelectedIndex == 0)
+                if (textBox55.Text.Contains("{CODE}") ||
+                    textBox55.Text.Contains("{SERIAL}") ||
+                    textBox55.Text.Contains("{CTN}") ||
+                    textBox55.Text.Contains("{ICCID}") ||
+                    textBox55.Text.Contains("{MODEL}") ||
+                    textBox55.Text.Contains("{MAC}"))
                 {
-                    //AT+MLWMBSPS="serviceCode=GAMR|deviceSerialNo=1234567|ctn=01022335078 | iccId = 127313 | deviceModel = Summer | mac = "
-                    epncmd = "serviceCode=" + tbSvcCd.Text + "|deviceSerialNo=";
-                    epncmd += tBoxDeviceSN.Text + "|ctn=";
-                    epncmd += dev.imsi + "|iccId=";
-
-                    string iccid = dev.iccid;
-                    epncmd += epniccid.Substring(epniccid.Length - 6, 6) + "|deviceModel=";
-                    epncmd += tBoxDeviceModel.Text + "|mac=";
+                    this.sendDataOut(textBox55.Text.Replace("{CODE}", tbSvcCd.Text)
+                                                   .Replace("{SERIAL}", tBoxDeviceSN.Text)
+                                                   .Replace("{CTN}", dev.imsi)
+                                                   .Replace("{ICCID}", epniccid.Substring(epniccid.Length - 6, 6))
+                                                   .Replace("{MODEL}", tBoxDeviceModel.Text)
+                                                   .Replace("{MAC}", ""));
                 }
-                else
+                else // Legacy
                 {
-                    //AT+QLWMBSPS=<service code>,<sn>,<ctn>,<iccid>,<device model>
-                    epncmd = "\"" + tbSvcCd.Text + "\",\"";
-                    epncmd += tBoxDeviceSN.Text + "\",\"";
-                    epncmd += dev.imsi + "\",\"";
+                    if (comboBox4.SelectedIndex == 0)
+                    {
+                        //AT+MLWMBSPS="serviceCode=GAMR|deviceSerialNo=1234567|ctn=01022335078 | iccId = 127313 | deviceModel = Summer | mac = "
+                        epncmd = "serviceCode=" + tbSvcCd.Text + "|deviceSerialNo=";
+                        epncmd += tBoxDeviceSN.Text + "|ctn=";
+                        epncmd += dev.imsi + "|iccId=";
 
-                    epncmd += epniccid.Substring(epniccid.Length - 6, 6) + "\",\"";
-                    epncmd += tBoxDeviceModel.Text + "\"";
+                        string iccid = dev.iccid;
+                        epncmd += epniccid.Substring(epniccid.Length - 6, 6) + "|deviceModel=";
+                        epncmd += tBoxDeviceModel.Text + "|mac=";
+                    }
+                    else
+                    {
+                        //AT+QLWMBSPS=<service code>,<sn>,<ctn>,<iccid>,<device model>
+                        epncmd = "\"" + tbSvcCd.Text + "\",\"";
+                        epncmd += tBoxDeviceSN.Text + "\",\"";
+                        epncmd += dev.imsi + "\",\"";
+
+                        epncmd += epniccid.Substring(epniccid.Length - 6, 6) + "\",\"";
+                        epncmd += tBoxDeviceModel.Text + "\"";
+                    }
+
+                    this.sendDataOut(textBox55.Text + epncmd);
                 }
 
-                this.sendDataOut(textBox55.Text + epncmd);
                 lbActionState.Text = states.setmbspstpb23.ToString();
             }
             else
