@@ -1804,10 +1804,6 @@ namespace WindowsFormsApp2
                                 }
                             }
                         }
-                        else if (dev.model.Contains("BC660K"))
-                        {
-
-                        }
                         else
                         {
                             switch (str2)
@@ -2014,11 +2010,9 @@ namespace WindowsFormsApp2
                         timer2.Start();
                     }
 
-                    if (dev.model.Equals("Quectel_BC660K-GL"))
+                    if (dev.model.Contains("BC660K"))
                     {
                         this.sendDataOut("AT+QSCLK=0"); // Disable deepsleep mode for test
-                        this.sendDataOut("AT+QLWADDOBJ=10250,0,2,0,1"); // create 10250 object
-                        this.sendDataOut("AT+QLWADDOBJ=26241,0,2,0,1"); // create 26241 object
                     }
 
                     if (Altair.Checked == true)
