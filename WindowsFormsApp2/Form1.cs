@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -9363,18 +9363,18 @@ namespace WindowsFormsApp2
                         value += "=";
                     }
                     //LogWrite("value = " + value);
-                    SetText(lbDirectRxData, Encoding.UTF8.GetString(Convert.FromBase64String(value)));
+                    SetText(lbLwM2MRxData, Encoding.UTF8.GetString(Convert.FromBase64String(value)));
                 }
                 else
-                    SetText(lbDirectRxData, value);
+                    SetText(lbLwM2MRxData, value);
 
-                if (lbDirectRxData.Text == lbSendedData.Text)
+                if (lbLwM2MRxData.Text == lbDevLwM2MData.Text)
                 {
                     endLwM2MTC("tc0503", string.Empty, string.Empty, string.Empty, string.Empty);
                 }
                 else
                 {
-                    endLwM2MTC("tc0503", string.Empty, "20000100", lbDirectRxData.Text, lbSendedData.Text);
+                    endLwM2MTC("tc0503", string.Empty, "20000100", lbLwM2MRxData.Text, lbDevLwM2MData.Text);
                 }
 
                 if (lbActionState.Text == states.lwm2mtc0503.ToString())
